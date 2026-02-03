@@ -1,0 +1,52 @@
+### 4. 代码风格与规范
+- **核心原则**: **极简主义**. 只保留核心业务逻辑, 拒绝冗余.
+- **错误处理**:
+    - **默认策略**: **不写** `try-except` 块. 让程序在错误处直接崩溃以暴露问题.
+    - **例外情况**: 仅在用户明确要求时添加, 且必须包含以下堆栈打印代码:
+      `print(f"[ERROR] 异常堆栈:\n{traceback.format_exc()}")`
+- **注释规范**:
+    - **文件头注释 (必须)**: 必须包含文件名, 主要类/函数功能, 初始化/属性说明, 方法摘要, **调用链上下文** (明确谁调用了本文件), 及关键参数.
+    - **行内注释**: 仅用于解释极其复杂的算法步骤或业务逻辑. 避免废话注释.
+- **版本迭代**:
+    - **覆盖式修改**: 修复Bug or 新增功能时, **直接修改**原代码. 禁止保留注释掉的废弃代码或"兼容旧版"的代码.
+- **架构一致性**:
+    - **精准定位**: 修改前必须先定位负责该功能的具体模块/类.
+    - **职责边界**: 严格遵守"单一职责原则", 不破坏类与类之间的功能界限.
+    - **结构变更**: 若需重构类结构或拆分文件, **必须先征询用户意见**.
+- **I/O与调试**:
+    - 直接进行文件读写, 不预先检查路径/文件是否存在 (相信系统环境).
+    - 调试用的 `print` 信息必须精简, 直击要点.
+
+**代码风格最小示例**:
+
+```
+python
+"""
+File: spectrum_loader.py
+Function: 加载并预处理光谱数据
+Class SpectrumLoader:
+    __init__: 初始化基础路径
+    load: 从文件直接读取原始数据 (返回 numpy array)
+    preprocess: 基于阈值去除噪声
+Call: tools/data_reader.py -> load_and_clean
+"""
+import numpy as np
+import joblib
+
+class SpectrumLoader:
+    def __init__(self, base_path):
+        self.base_path = base_path
+
+    def load(self, filename):
+        # 直接IO读取, 不做存在性检查
+        return np.loadtxt(f"{self.base_path}/{filename}")
+
+    def preprocess(self, data, threshold=0.1):
+        print(f"Processing shape: {data.shape}")
+        # 复杂逻辑: 将低于阈值的噪声置零
+        data[data < threshold] = 0
+        return data
+
+    def save_model(self, model, path):
+        joblib.dump(model, path)
+```
