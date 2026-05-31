@@ -1,0 +1,1 @@
+如果想要了解本项目，请先查看./strctures/spec_structure.md
