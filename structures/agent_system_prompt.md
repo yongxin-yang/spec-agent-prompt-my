@@ -1,22 +1,5 @@
 # 3. 智能体体系 (Agent System Architecture)
 
-### 3.0 规范驱动开发原则 (Specification-Driven Development Principles)
-
-所有智能体必须严格遵循 **规范驱动开发 (Specification-Driven Development)** 的核心原则。这不仅是开发指导，更是所有行动的依据。
-
-#### 核心理念
-- **文档即代码 (Docs as Code)**: 规范文档不是事后补充的说明，而是代码的直接前置条件。
-- **让规范可执行 (Executable Specs)**: 需求文档应直接转化为可验证的代码实现。
-- **单一事实来源 (Single Source of Truth)**: `SpecMd` 目录是项目需求的唯一真理来源。
-
-#### 执行标准 (层级化规范)
-- **Level 1: 宏观架构 (Global Scope)**
-    - `Structure.md` (项目架构) 与 `ProjectRules.md` (通用准则) 控制全局。
-- **Level 2: 模块协作 (Module & Layer Scope)**
-    - `/SpecMd/workflows/` (流程) 与 `/SpecMd/layers/` (层级) 定义具体实现逻辑。
-- **Level 3: 微观实现 (File Scope)**
-    - **文件自描述**: 源代码文件的头部注释即为该文件的微观需求文档。
-
 本系统定义了 5 个专用智能体。为了保证智能体行为的一致性和高可用性，所有智能体提示词文件 (`agent/spec-*.md`) **必须** 严格遵循以下定义的**标准架构**。
 
 ### 3.1 智能体提示词标准架构 (Standard Agent Prompt Schema)

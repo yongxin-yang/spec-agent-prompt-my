@@ -3,11 +3,17 @@
 **分支**：`[###-feature-name]` | **日期**：[DATE] | **规范**：[link]  
 **输入**：来自 `/specs/[###-feature-name]/spec.md` 的特性规范
 
-说明：此模板由 `/speckit.plan` 填充。执行流程见 `.specify/templates/commands/plan.md`。
+说明：此模板由 `/DDD-` 填充。执行流程见 `.specify/templates/commands/plan.md`。
 
-## 摘要
-
-[从特性规范提炼主需求 + 从调研得出的技术路线]
+# 项目介绍
+## [PROJECT_GOAL_1]
+<!-- 示例： 1. 最终项目目标-->
+[PROJECT_GOAL_1_DESCRIPTION]
+<!-- 示例：
+1.标准化原始数据[多维(wavelenth,x)对多维y],不支持图像处理
+2.机器学习,即利用统计学方法训练一个回归,聚类或分类模型
+3.进行实际操作,解决实际问题
+-->
 
 ## 技术上下文
 
@@ -25,33 +31,49 @@
 **约束**：[领域相关，如 p95 <200ms、内存 <100MB、离线可用 或 NEEDS CLARIFICATION]  
 **规模/范围**：[领域相关，如 1 万用户、100 万行代码、50 个界面 或 NEEDS CLARIFICATION]
 
-## 宪章检查
-
-门禁：在阶段 0 调研前必须通过；阶段 1 设计后重检。
-
-1. Windows（PySide6）与 Android：两端等价能力；技术栈与数据口径一致。
-2. 核心数据统一：本地持久化模型一致（事件明细→聚合）。
-3. 统计可验证：项目/天/月的聚合口径一致且可重算。
-4. 集成合约预留：导入/导出格式定义，含版本字段与兼容策略。
-5. 简单与最小依赖：避免额外依赖与多层抽象，职责单一。
 
 ## 项目结构
 
-### 文档（本特性）
+### 规范驱动文档
 
 ```text
+specs/scripts/ 脚本工具等
+specs/statistics.md 索引所有需求，标号并写简要概述
 specs/[###-feature]/
-├── plan.md              # 本文件（/speckit.plan 输出）
-├── research.md          # 阶段 0 输出（/speckit.plan）
-├── data-model.md        # 阶段 1 输出（/speckit.plan）
-├── quickstart.md        # 阶段 1 输出（/speckit.plan）
-├── contracts/           # 阶段 1 输出（/speckit.plan）
-└── tasks.md             # 阶段 2 输出（/speckit.tasks 生成）
+├── specs.md             # require-explainer 输出 该需求的简洁的自然语言描述
+├── checklist.md          # tester 输出 
+└── tasks.md             # require-explainer 输出 具体实现规划以及实现状态和测试规划
+```
+### 依据来源文档
+<!--
+  需操作：将下方占位树替换为具体结构；删除未选项；保留真实路径，并在每一个文件夹或文件后做简要注释
+-->
+```text
+docus/ 依据来源文档
+|── workflows
+│   └── workflow.md 工作流文件，明确数据流转格式等
+└── others
+│   ├── InputDataset.md
+│   ├── OutputImage.md
+│   └── OutputParadigm.md
+└── layers 分层与模块的文件或文件夹(如果代码结构是多层嵌套的)，注明每个层的作用以及相互之间的交互逻辑
+│   ├── README.md 所有这一层的文件的分工职责总介绍以及相互之间的数据传递格式等
+│   ├── Explainability.md
+│   └── 2utils utils层规范
+        ├── README.md
+        └── algorithm.md 算法规范 -- 数学上的唯一实现
+│   ├── 1tools.md tools层规范
+│   ├── 3datamodels.md
+│   ├── 4JsonConfig.md
+│   ├── 5processcenter.md
+│   └── 6scripts.md
+└── structure.md 项目结构，项目目标、架构设计、技术栈及模块职责
+└── constitution.md 最高的规则与规范
 ```
 
 ### 源码（仓库根）
 <!--
-  需操作：将下方占位树替换为本特性的具体结构；删除未选项；保留真实路径。
+  需操作：将下方占位树替换为具体结构；删除未选项；保留真实路径。
 -->
 
 ```text
