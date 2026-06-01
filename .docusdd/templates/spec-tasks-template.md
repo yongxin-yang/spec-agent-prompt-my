@@ -1,6 +1,5 @@
 ---
-
-description: "特性实现的任务清单模板"
+description: "特性实现任务模板"
 ---
 
 # 任务：[FEATURE NAME]
@@ -18,13 +17,6 @@ description: "特性实现的任务清单模板"
 - **[Story]**：该任务所属的用户故事（如 US1、US2、US3）
 - 描述中应包含精确文件路径
 
-## 路径约定
-
-- **单项目**：仓库根下 `src/`、`tests/`
-- **Web 应用**：`backend/src/`、`frontend/src/`
-- **移动端**：`api/src/`、`ios/src/` 或 `android/src/`
-- 下方路径默认单项目结构——请按 plan.md 调整
-
 <!-- 
   ============================================================================
   重要：以下任务仅为示例。
@@ -38,6 +30,20 @@ description: "特性实现的任务清单模板"
   ============================================================================
 -->
 
+
+# 模板
+
+## 阶段 0：Constitution Alignment（宪章对齐）
+
+**目的**：把宪章规则转为可执行任务，作为所有实现前置条件。
+
+- [ ] T000 更新 `docus/` 或 `specs/` 对应文档后再开始实现（文档即代码）
+- [ ] T000A 校验 `spec.md` 需求均具备可测试验收标准
+- [ ] T000B 校验运行环境约束（Windows/PowerShell；Python 项目需 my-uv + uv）
+- [ ] T000C 预创建或确认报告输出路径 `specs/reports/`
+
+---
+
 ## 阶段 1：Setup（共享基础设施）
 
 **目的**：项目初始化与基础结构
@@ -48,26 +54,7 @@ description: "特性实现的任务清单模板"
 
 ---
 
-## 阶段 2：Foundational（阻塞前置）
-
-**目的**：所有用户故事开始前必须完成的核心基础设施
-
-⚠️ 关键：未完成前不得进入任一用户故事
-
-示例（按项目实际调整）：
-
-- [ ] T004 初始化数据库架构与迁移框架
-- [ ] T005 [P] 搭建认证/授权框架
-- [ ] T006 [P] 配置 API 路由与中间件结构
-- [ ] T007 创建所有故事依赖的基础模型/实体
-- [ ] T008 配置错误处理与日志基础设施
-- [ ] T009 配置环境变量与配置管理
-
-检查点：基础可用——可开始并行实现用户故事
-
----
-
-## 阶段 3：用户故事 1 - [标题]（优先级：P1）🎯 MVP
+## 阶段 2：用户故事 1 - [标题]（优先级：P1）🎯 MVP
 
 **目标**：[此故事交付内容]
 
@@ -82,59 +69,17 @@ description: "特性实现的任务清单模板"
 
 ### 用户故事 1 的实现
 
-- [ ] T012 [P] [US1] 创建模型 src/models/[entity1].py
-- [ ] T013 [P] [US1] 创建模型 src/models/[entity2].py
-- [ ] T014 [US1] 实现服务 src/services/[service].py（依赖 T012、T013）
-- [ ] T015 [US1] 实现端点/功能 src/[location]/[file].py
-- [ ] T016 [US1] 增加校验与错误处理
-- [ ] T017 [US1] 为本故事操作添加日志
+- [ ] T001 [P] 更新设计文档 docus/layers/[layer]#2.1预处理.md
+更新预处理使得加入对于光谱长度的限制,限制光谱区间为300-1500
+- [ ] T002 [P] 更新设计文档 docus/workflows/[workflow].md
+更新设计文档使得数据流转加入预处理后的数据，类型为:np.array
+- [ ] T003 [P] 更新结构文档 docus/structure.md
+新增文档：docus/layers/utils/README.md
+- [ ] T004 [P] 更新微观文件 `src/utils/preprocessor.py` 的自描述
+添加主要职责:强调统一公共入口 `preprocess_pipeline(X, wavelengths, config) -> (X_new, wavelengths_new)`与重复性评估公共入口 `evaluate_repetition(X, sample_indices=None, eps) -> float`
+- [ ] T005 [P] 依据文档在 `src/utils/preprocessor.py` 里面实现`preprocess_pipeline`与`evaluate_repetition`函数
 
 检查点：用户故事 1 可独立完整运行并可测试
-
----
-
-## 阶段 4：用户故事 2 - [标题]（优先级：P2）
-
-**目标**：[此故事交付内容]
-
-**独立测试**：[如何单独验证]
-
-### 用户故事 2 的测试（可选）⚠️
-
-- [ ] T018 [P] [US2] 合约测试 tests/contract/test_[name].py
-- [ ] T019 [P] [US2] 集成测试 tests/integration/test_[name].py
-
-### 用户故事 2 的实现
-
-- [ ] T020 [P] [US2] 创建模型 src/models/[entity].py
-- [ ] T021 [US2] 实现服务 src/services/[service].py
-- [ ] T022 [US2] 实现端点/功能 src/[location]/[file].py
-- [ ] T023 [US2] 与用户故事 1 组件集成（如需）
-
-检查点：用户故事 1 与 2 均可独立运行
-
----
-
-## 阶段 5：用户故事 3 - [标题]（优先级：P3）
-
-**目标**：[此故事交付内容]
-
-**独立测试**：[如何单独验证]
-
-### 用户故事 3 的测试（可选）⚠️
-
-- [ ] T024 [P] [US3] 合约测试 tests/contract/test_[name].py
-- [ ] T025 [P] [US3] 集成测试 tests/integration/test_[name].py
-
-### 用户故事 3 的实现
-
-- [ ] T026 [P] [US3] 创建模型 src/models/[entity].py
-- [ ] T027 [US3] 实现服务 src/services/[service].py
-- [ ] T028 [US3] 实现端点/功能 src/[location]/[file].py
-
-检查点：所有用户故事均可独立运行
-
----
 
 [按需添加更多故事阶段，复用上述模式]
 
@@ -150,65 +95,6 @@ description: "特性实现的任务清单模板"
 - [ ] TXXX [P] 追加单元测试 tests/unit/（若有请求）
 - [ ] TXXX 安全加固
 - [ ] TXXX 运行 quickstart.md 校验
-
----
-
-## 依赖与执行顺序
-
-### 阶段依赖
-
-- Setup（阶段 1）：无依赖，可立即开始
-- Foundational（阶段 2）：依赖 Setup，阻塞全部用户故事
-- 用户故事（阶段 3+）：依赖 Foundational 完成
-  - 有人力时可并行推进；或按优先级顺序串行（P1 → P2 → P3）
-- Polish（最终阶段）：依赖所需故事完成
-
-### 用户故事依赖
-
-- 用户故事 1（P1）：Foundational 完成后开始；不依赖其他故事
-- 用户故事 2（P2）：Foundational 完成后开始；可与 US1 集成但需可独立测试
-- 用户故事 3（P3）：Foundational 完成后开始；可与 US1/US2 集成但需可独立测试
-
-### 每个用户故事内的顺序
-
-- 若包含测试，先写测试并确保实现前失败
-- 模型 → 服务 → 端点 → 集成
-- 当前故事完成后再进入下一个
-
-### 并行机会
-
-- 所有标记 [P] 的 Setup/Foundational 任务可并行
-- Foundational 完成后，用户故事可并行（视团队能力）
-- 故事内标记 [P] 的测试与模型可并行
-- 不同用户故事可由不同成员并行推进
-
----
-
-## 实施策略
-
-### 先做 MVP（仅用户故事 1）
-
-1) 完成阶段 1：Setup  
-2) 完成阶段 2：Foundational（关键）  
-3) 完成阶段 3：用户故事 1  
-4) 停止并验证：独立测试故事 1  
-5) 若就绪则部署/演示
-
-### 增量交付
-
-1) 完成 Setup + Foundational → 基础就绪  
-2) 加入用户故事 1 → 独立测试 → 部署/演示（MVP）  
-3) 加入用户故事 2 → 独立测试 → 部署/演示  
-4) 加入用户故事 3 → 独立测试 → 部署/演示  
-5) 确保新增不破坏既有功能
-
-### 并行团队策略
-
-多人协作：
-
-1) 团队共同完成 Setup + Foundational  
-2) 基础完成后：A 负责 US1，B 负责 US2，C 负责 US3  
-3) 各故事独立完成并集成
 
 ---
 

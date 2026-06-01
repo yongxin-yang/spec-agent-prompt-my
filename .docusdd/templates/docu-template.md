@@ -1,3 +1,7 @@
+<!-- 宪章摘录（默认，来源：.docusdd/templates/docu-constitution-template.md） -->
+<!-- 核心：文档即代码；可执行规范；单一事实来源；AI 与人类共同治理 -->
+<!-- 强制：每个 layers/workflows 文档必须在开头写明“引用的宪章条款”与“本文件如何满足条款”。 -->
+
 所有 `docs/` 下的子目录文档必须遵循以下特定模板：
 
 # 1. 层级README.md文件模板 (`layers/*/README.md`)

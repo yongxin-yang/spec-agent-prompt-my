@@ -9,6 +9,9 @@
   - 生成同步影响报告并列出需人工跟进的 TODO；
   - 初始化项目骨架（在空仓或需要重置时复制 `.docusdd/templates` 中的模板到 `docus/`、创建 `specs/`、`specs/reports/`、`src/`、`tests/` 等目录并写入初始文件）；
   - 在宪章更新需要触发的情况下，列出/触发后续模板与命令（但不直接实现业务代码）。
+- 相关脚本：
+  - [.docusdd/scripts/check_docus_structure.ps1](../.docusdd/scripts/check_docus_structure.ps1)
+  - [.docusdd/scripts/check_specs_structure.ps1](../.docusdd/scripts/check_specs_structure.ps1)
 - 输入：仓库上下文（README、现有所有文件）、用户交互输入（修订或初始化指令）。
 - 输出：更新或新建的 `docus/constitution.md`、初始化产生的目录/文件、同步影响报告与 TODO 清单。
 - 边界：负责治理文档与初始化物料的创建/更新；若需要执行具体功能实现或测试，则交付 `DDD-require-explainer` 或 `DDD-implementor` 执行。
@@ -23,6 +26,10 @@
 - 输入：用户需求描述、仓库 Docus（constitution/structure）、可选的历史 `specs`。若用户指定某个已有 spec，则以该目录为修改目标。
 - 输出：新建或已更新的 `specs/<feature>/spec.md`、`tasks.md`（初版或更新）、`specs/statistics.md` 更新条目。
 - 边界：只产出或修改规格及其相关文档；当任务数较少且可执行时可直接执行小型实现，否则将任务移交 `DDD-implementor` 执行。
+- 相关脚本：
+  - [.docusdd/scripts/get_env_name.ps1](../.docusdd/scripts/get_env_name.ps1)
+  - [.docusdd/scripts/check_specs_structure.ps1](../.docusdd/scripts/check_specs_structure.ps1)
+  - [.docusdd/scripts/check_docus_structure.ps1](../.docusdd/scripts/check_docus_structure.ps1)
 - 对标 spec-kit：主要对标 spec-kit 的 `specify` 与 `tasks` 命令，参考：
   - [spec-kit/templates/commands/specify.md](https://github.com/github/spec-kit/blob/main/templates/commands/specify.md)
   - [spec-kit/templates/commands/tasks.md](https://github.com/github/spec-kit/blob/main/templates/commands/tasks.md)
@@ -40,17 +47,15 @@
 - 输出：变更后的 `docus/` 文档、`src/` 代码变更、`tests/` ，以及更新 `tasks.md`、`checklist.md` 和 `specs/reports/` 中的报告。
 - 边界：实现阶段必须遵循 `docus/constitution.md` 的治理原则；在遇到超出当前 spec 范围的设计决策或治理冲突时，应暂停并回交 `DDD-require-explainer` 或 `DDD-constitution-builder` 以取得明确指示。
 - 额外说明：`DDD-implementor` 负责 `checklist` 的生成与运行（如同 `spec-tester` 的部分职责），并在需要时把测试、评估、检查和验收结果输出到 `specs/reports/`，因此 `checklist` 与 `reports` 功能都已并入实现流程。
+- 相关脚本：
+  - [.docusdd/scripts/get_env_name.ps1](../.docusdd/scripts/get_env_name.ps1)
+  - [.docusdd/scripts/check_codefile_structure.ps1](../.docusdd/scripts/check_codefile_structure.ps1)
+  - [.docusdd/scripts/check_specs_structure.ps1](../.docusdd/scripts/check_specs_structure.ps1)
+  - [.docusdd/scripts/check_docus_structure.ps1](../.docusdd/scripts/check_docus_structure.ps1)
 - 对标 spec-kit：对应 spec-kit 的 `implement` 与 `plan`、`analyze` 等命令，参考：
   - [spec-kit/templates/commands/implement.md](https://github.com/github/spec-kit/blob/main/templates/commands/implement.md)
   - [spec-kit/templates/commands/checklist.md](https://github.com/github/spec-kit/blob/main/templates/commands/implement.md)
 
-
-协作与工作流（简要）
-- 典型流水线：
-  1. 用户提出模糊需求 → 调用 `DDD-require-explainer` 生成/更新 `spec.md`。
-  2. `DDD-require-explainer` 生成 `tasks.md` 并标注依赖与优先级；若任务量小且独立，可直接进入实现。
-  3. 对于需要实现的任务，调用 `DDD-implementor` 执行并在完成后回写 `tasks.md` 与 `checklist.md`。
-  4. 若变更触及治理层面或规则更新，调用 `DDD-constitution-builder` 进行宪章修订并同步模板。
 
 说明：以上智能体说明以仓库中 `.github/agents/*.agent.md` 为准；若需要扩展额外专职智能体（如 consistency-checker、tester），在 `.github/agents/` 新增对应文件并在本文档追加简短描述即可。
 - **适用性**: 复杂功能开发、大型架构重构、对代码质量和文档完整性有严格要求的任务。

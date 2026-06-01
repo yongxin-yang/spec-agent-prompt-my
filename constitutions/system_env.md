@@ -5,7 +5,7 @@
 - **包与环境管理**:
         - **Python**: 使用自制uv扩展 `my-uv` 进行环境管理.
             - **注意**: 本项目依赖 `my-uv` 提供的统一命令来管理虚拟环境, 请勿直接使用标准 `venv` 命令.
-            - **项目环境名称**: 优先使用终端环境变量 `$env:PROJECT_ENV_NAME`；若未设置则点源 `SpecMd/scripts/get_env_name.ps1` 写入后使用。
+            - **项目环境名称**: 优先使用终端环境变量 `$env:PROJECT_ENV_NAME`；若未设置则点源 `/.docusdd/scripts/get_env_name.ps1` 写入后使用。
             - **激活环境**: 执行 python 任务前**必须**先激活此环境：`my-uv activate $env:PROJECT_ENV_NAME`.
         - **扩展命令参考**:
             - `my-uv activate <name>` (别名 `a`): 激活指定名称的虚拟环境.
@@ -22,7 +22,7 @@
             - `uv export -o requirements.txt`: 导出当前锁定依赖为 `requirements.txt` 以供外部复现。
             - `uv run python <script>`: 在项目依赖上下文中运行脚本 (可选; 常规用法为激活环境后直接执行 `python`)。
         - **使用顺序建议**:
-            - 若 `$env:PROJECT_ENV_NAME` 未设置，先点源 `SpecMd/scripts/get_env_name.ps1`，再执行 `my-uv activate $env:PROJECT_ENV_NAME`，最后执行 `uv ...` 命令。
+            - 若 `$env:PROJECT_ENV_NAME` 未设置，先点源 `/docusdd/scripts/get_env_name.ps1`，再执行 `my-uv activate $env:PROJECT_ENV_NAME`，最后执行 `uv ...` 命令。
             - 运行时依赖与开发依赖分离: 使用 `uv add --dev <package>` 添加仅开发场景需要的依赖。
             - 项目以 `pyproject.toml` 为单一依赖声明源; 锁文件控制具体解析版本, 保证可复现安装。
         - **详细文档**: `UVExtenIntro`文件夹下内容.

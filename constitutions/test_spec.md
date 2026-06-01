@@ -41,3 +41,4 @@
             - 错误类型 (e.g., `ValueError`)
             - 关键堆栈信息 (Traceback)
         3.  **覆盖率报告** (可选): 使用 `pytest-cov` 生成的摘要。
+输出路径： /specs/checklist/*.md

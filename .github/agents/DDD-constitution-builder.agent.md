@@ -1,10 +1,9 @@
 ---
-description: 基于交互式或已提供的原则输入创建或更新项目宪章，并确保所有依赖模板保持同步。
+description: 基于交互式或已提供的原则输入创建或更新项目宪章、项目结构，并确保所有依赖模板保持同步。
 handoffs: 
   - label: build specifications, including specific execution of document or code structure changes and code testing based on the updated constitution.
     agent: DDD-require-explainer
     prompt: 基于更新后的宪章实现功能规格。我想构建...
-reference: https://github.com/github/spec-kit
 ---
 
 ## 用户输入
@@ -17,13 +16,45 @@ $ARGUMENTS
 
 ## 执行前检查
 
-检查项目文件夹是否为空。
-若为空，则创建标准文件夹与文件架构（见下文DDD文件夹架构）：
-1. 复制 `.docusdd/templates/constitution-template.md` 到 `docus/constitution.md` 。
-2. 复制 `.docusdd/templates/structure-template.md` 到 `docus/structure.md` 。
-3. 创建 `docus/layers/`、`docus/workflows/` 文件夹。
-4. 创建 `src/`、`tests/` 文件夹。
-5. 创建 `specs/` 文件夹，并在其中创建 `statistics.md` 文件
+先判断当前仓库是否需要“初始化”还是“增量更新”。
+
+- 如果 `docus/constitution.md`、`docus/structure.md`、`specs/` 或 `src/` 尚未建立，或用户明确要求初始化项目，则执行初始化流程。
+- 如果项目已存在，则只更新宪章、必要的依赖模板和与宪章相关的目录结构，不要重建已存在文件。
+
+### 初始化流程
+
+若需要初始化项目，请按以下顺序创建：
+1. 复制 [.docusdd/templates/docu-constitution-template.md](/.docusdd/templates/docu-constitution-template.md) 到 `docus/constitution.md`。
+2. 复制 [.docusdd/templates/docu-structure-template.md](/.docusdd/templates/docu-structure-template.md) 到 `docus/structure.md`。
+3. 复制 [.docusdd/templates/docu-template.md](/.docusdd/templates/docu-template.md) 到 `docus/layers/`、`docus/workflows/` 或其他需要的新文档文件中，作为新文档的起点。
+4. 创建 `docus/layers/`、`docus/workflows/`、`docus/others/`、`specs/`、`specs/reports/`、`src/`、`tests/` 等目录。
+5. 在 `specs/` 下创建 `statistics.md`，作为需求序号与目录索引。
+初始化或重建项目结构时，可先运行 [.docusdd/scripts/check_docus_structure.ps1](../../.docusdd/scripts/check_docus_structure.ps1) 和 [.docusdd/scripts/check_specs_structure.ps1](../../.docusdd/scripts/check_specs_structure.ps1) 观察当前树状结构，再决定需要创建或迁移哪些文件。
+
+### 目录与文件的职责
+
+- `docus/`：长期稳定的依据来源文档，包含宪章、结构、层级与流程规范。
+- `specs/`：当前迭代的规范驱动文档集合，包含每个需求的 `spec.md`、`tasks.md`、`checklist.md`。
+- `specs/reports/`：测试、评估、检查、验收和环境验证报告的统一输出目录。
+- `src/`：实现代码目录，仅在实现层面使用。
+- `tests/`：测试代码与验证脚本目录。
+
+### 运行环境叙述职责
+
+当你处理 `docus/structure.md` 时，必须把运行环境约束写成清晰、可执行的默认说明，并优先参考用户提供的参考文件或输入。如果用户没有提供足够信息，则需要从仓库上下文推断，或直接询问用户以获取必要信息。运行环境说明必须包含：
+
+如果仓库已有 `docus/structure.md`，你不仅要更新宪章，也要同步更新该文件里的运行环境段落与项目结构说明。
+
+### 模板引用规则
+
+所有创建新文件时的模板来源都必须显式指向仓库内的真实模板文件，优先使用相对路径链接，例如：
+- [.docusdd/templates/docu-constitution-template.md](../../.docusdd/templates/docu-constitution-template.md)
+- [.docusdd/templates/docu-structure-template.md](../../.docusdd/templates/docu-structure-template.md)
+- [.docusdd/templates/docu-template.md](../../.docusdd/templates/docu-template.md)
+- [.docusdd/templates/spec-specs-template.md](../../.docusdd/templates/spec-specs-template.md)
+- [.docusdd/templates/spec-tasks-template.md](../../.docusdd/templates/spec-tasks-template.md)
+- [.docusdd/templates/spec-checklist-template.md](../../.docusdd/templates/spec-checklist-template.md)
+- [.docusdd/templates/spec-report-template.md](../../.docusdd/templates/spec-report-template.md)
 
 ### DDD文件夹架构
 
@@ -57,7 +88,7 @@ $ARGUMENTS
 
 你正在更新 `docus/constitution.md` 中的项目宪章。该文件是一个包含方括号占位符（例如 `[PROJECT_NAME]`、`[PRINCIPLE_1_NAME]`）的模板。你的职责是：(a) 收集/推导具体值，(b) 精确填充模板，(c) 将任何修订传播到所有依赖产物中。
 
-**注意**：如果 `docus/constitution.md` 尚不存在，它应当在项目初始化时从 `.docusdd/templates/constitution-template.md` 初始化而来。如果缺失，先复制模板。
+**注意**：如果 `docus/constitution.md` 尚不存在，它应当在项目初始化时从 `.docusdd/templates/docu-constitution-template.md` 初始化而来。如果缺失，先复制模板。
 
 按如下执行流程进行：
 
@@ -82,10 +113,20 @@ $ARGUMENTS
    - 确保 Governance 章节列出：修订流程、版本策略、合规复核期望。
 
 4. 一致性传播检查清单（将原先的检查清单转为主动校验）：
-   - 读取 `.docusdd/templates/spec-tasks-template.md` 并确保其中的 "Constitution Check" 或规则与更新后的原则一致。
-   - 读取 `.docusdd/templates/spec-specs-template.md` 以确保范围/需求对齐——若宪章新增/移除必需章节或约束，则更新模板。
-   - 读取 `.docusdd/templates/spec-checklist-template.md` 并确保任务分类反映新增或移除的原则驱动任务类型（例如可观测性、版本管理、测试纪律）。
-   - 读取 `docus/` 下的每个命令文件，确认在需要通用指导时不存在过时引用（例如仅提及 CLAUDE 这类特定代理名）。
+   - 读取 `.docusdd/templates/docu-structure-template.md` 并确保其中“宪章检查/复杂度跟踪/结构约束”与当前宪章一致。
+   - 读取 `.docusdd/templates/docu-template.md`，确保分层文档模板的输入/输出、职责边界、注释规范与宪章一致。
+   - 读取 `.docusdd/templates/spec-specs-template.md`，确保需求章节与宪章中的测试纪律、单一事实来源、语言交互规则一致。
+   - 读取 `.docusdd/templates/spec-tasks-template.md`，确保任务分类包含由宪章驱动的任务类型（文档先行、环境校验、测试与报告归档）。
+   - 读取 `.docusdd/templates/spec-checklist-template.md`，确保验收清单覆盖宪章合规项与 `specs/reports/` 追溯要求。
+   - 读取 `.docusdd/templates/spec-report-template.md`，确保报告模板包含宪章合规检查与证据字段。
+   - 读取 `.github/agents/*.agent.md`（包括本文件），确认不存在过时路径、错误模板名或冲突职责描述。
+   - 读取 `README.md` 与 `quickstart.md`，更新对变更原则、目录约束和执行流程的引用。
+   - 读取 `docus/` 下相关文档，确认不存在与当前治理冲突的过时引用。
+
+4.1 当用户要求“更新模板默认规则”时的强制执行方式：
+   - 必须保留 `.docusdd/templates/docu-constitution-template.md` 的占位符结构。
+   - 必须把默认规则写入对应 `<!-- 示例：... -->` 注释中，而不是直接替换所有占位符。
+   - 示例需尽可能详细，至少包含 MUST/SHOULD 级约束、路径约束、输出约束与 rationale。
 
 5. 生成同步影响报告（在宪章文件更新后，以 HTML 注释形式置于宪章文件顶部）：
    - 版本变化：old → new

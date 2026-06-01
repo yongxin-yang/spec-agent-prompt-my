@@ -1,9 +1,10 @@
 # check_codefile_structure.ps1
 # 列出 src 目录下的文件结构，排除无关目录
 
-$srcPath = Resolve-Path (Join-Path $PSScriptRoot "..\..\src") | Select-Object -ExpandProperty Path
+$srcPath = Join-Path $PSScriptRoot "..\..\src"
 
 if (Test-Path $srcPath) {
+    $srcPath = Resolve-Path $srcPath | Select-Object -ExpandProperty Path
     Get-ChildItem -Path $srcPath -Recurse | Where-Object {
         $path = $_.FullName
         $path -notmatch '__pycache__' -and 
@@ -17,10 +18,8 @@ if (Test-Path $srcPath) {
         # But Substring is safer if we ensure $srcPath length handles it.
         
         # A robust way to get relative path:
-        $relativePath = $_.FullName.Substring($srcPath.Length)
-        if ($relativePath.StartsWith("\") -or $relativePath.StartsWith("/")) {
-             $relativePath = $relativePath.Substring(1)
-        }
+           $relativePath = $_.FullName.Substring($srcPath.Length)
+           $relativePath = $relativePath -replace '^[\\/]', ''
 
         if ($_.PSIsContainer) {
             Write-Output "[$relativePath]"

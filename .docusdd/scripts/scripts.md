@@ -4,5 +4,5 @@
 
 - `get_env_name.ps1`: 获取项目当前使用的虚拟环境名称（读取 `.env`）。
 - `check_codefile_structure.ps1`: 快速生成并展示 `src` 目录下的代码文件结构。
-- `check_specify_structure.ps1`: 快速生成并展示 `specs` 目录下的规范驱动文档结构。
-- `check`: 快速生成并展示 `docus`目录下的依据来源文档结构。
+- `check_specs_structure.ps1`: 快速生成并展示 `specs` 目录下的规范驱动文档结构。
+- `check_docus_structure.ps1`: 快速生成并展示 `docus` 目录下的依据来源文档结构。

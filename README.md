@@ -166,6 +166,8 @@ Docus 是系统的依据来源文档（Source Documentation）。
 
 它是项目的长期知识库，也是整个系统的唯一文档来源。
 
+当 `docus/constitution.md` 发生变更时，必须同步传播到 `.docusdd/templates/`、`.github/agents/`、`README.md`、`quickstart.md`，避免规则与执行模板脱节。
+
 
 Docus 包含三个层级,其中前两个层级统一在./docus中
 
@@ -252,6 +254,7 @@ project/
 ├── docus/
 │
 ├── specs/
+│   └── reports/
 │
 ├── src/
 │

@@ -4,9 +4,6 @@ handoffs:
   - label: implement large-scale modifications, including specific execution of document or code structure changes and code testing.
     agent: DDD-implementor
     prompt: 为该规格创建计划。 我将使用...
-  - label: consistency check for specs, documents and src
-    agent: DDD-consistency-checker
-    prompt: 检验文档与代码结构的一致性。重点在...
 
 ---
 ## 用户输入
@@ -19,16 +16,28 @@ $ARGUMENTS
 
 ## 1. 判断是否属于之前的需求
 
-1. 如果用户明确指明属于之前未完成的需求，并指明了需求名称和文件夹，则跳过第2步的specs.md文件生成，直接修改。
-2. 如果没有指明但是属于很小的需求或者之前的需求，先加载./specs/statistics.md，找到与用户输入最相关的需求（可以通过关键词匹配、语义相似度等方式），合并到其中，跳过第二步的文件生成，直接修改。
+先读取 `./specs/statistics.md`，把它当作需求索引表来使用。你的任务不是“总是新建”，而是先判断用户输入对应的是新需求还是已有需求的增量修改。
 
-## 2. specs.md 文件生成或修改
+在读取统计索引前后，可以先用 [.docusdd/scripts/check_specs_structure.ps1](../../.docusdd/scripts/check_specs_structure.ps1) 快速查看当前 `specs/` 结构；如果需要对照长期文档再做判断，也可以用 [.docusdd/scripts/check_docus_structure.ps1](../../.docusdd/scripts/check_docus_structure.ps1) 查看 `docus/` 结构。
+
+1. 如果用户已经明确指出是某个已有需求，并且给出了需求名称或文件夹路径，则直接进入“修改已有 spec”模式，不创建新目录。
+2. 如果用户没有明确指定，但看起来像一个对现有需求的小修订，先在 `statistics.md` 中按关键字、语义相似度、历史标题进行匹配，找到最可能的目标需求，然后修改该需求目录下的文件。
+3. 只有在以下情况同时成立时，才进入“新需求”模式：
+   - `statistics.md` 中找不到足够相近的已有需求；
+   - 用户描述明显是一个新的独立功能/问题；
+   - 将其并入旧需求会导致范围污染或验收边界变模糊。
+
+当判定为新需求时，先为其分配新的序号，再创建新的需求目录。
+
+## 2. specs.md,tasks.md,checklist.md 文件生成或修改
 
 ### 大纲
 
-触发消息中，用户在 `/speckit.specify` 后输入的文本 **就是** 功能描述。即使下面字面出现 `$ARGUMENTS`，也假设你始终能在本次对话中拿到该描述。除非用户给了空命令，否则不要让用户重复输入。
+触发消息中，用户在 `/DDD-require-explainer` 后输入的文本 **就是** 功能描述。即使下面字面出现 `$ARGUMENTS`，也假设你始终能在本次对话中拿到该描述。除非用户给了空命令，否则不要让用户重复输入。
 
 基于该功能描述，执行以下步骤：
+
+#### specs.md 文件生成或修改
 
 1. **生成一个简短名称**（2-4 个词）：
    - 分析功能描述并提取最关键的关键词
@@ -44,7 +53,7 @@ $ARGUMENTS
 
 2. 读取 `.docusdd/templates/spec-template.md` 以了解必需的章节结构。
 
-3. 将序号和简要介绍写入 ./specs/statistics.md: 记录生成的简短名称、提取的关键概念以及给这个需求排上序号
+3. 将序号和简要介绍写入 `./specs/statistics.md`：记录生成的简短名称、提取的关键概念、需求状态，以及该需求对应的目录名。
 
 4. 按如下流程执行：
    1. 从参数解析用户描述
@@ -71,32 +80,22 @@ $ARGUMENTS
    7. 识别关键实体（若涉及数据）
    8. 返回：SUCCESS（spec 可进入规划阶段）
 
-5. 建立相应的文件夹和文件，命名为 `./specs/###-short-name/`，其中 `###` 是上一步中分配的序号，`short-name` 是第 1 步生成的简短名称。文件夹内必须包含：
+5. 如果本次判定为“新需求”，再建立相应的文件夹和文件，命名为 `./specs/###-short-name/`，其中 `###` 是上一步中分配的序号，`short-name` 是第 1 步生成的简短名称。文件夹内必须包含：
    - `spec.md`：功能规格说明
    - `tasks.md`：实现规划与任务列表以及检查要求（初始可空）
    - `checklist.md`：验收标准检查清单（初始可空）
 
-### 快速指南
+   如果本次判定为“已有需求修改”，则只更新该需求目录内的相应文件，不创建新文件夹。
 
-- 聚焦于用户需要 **什么** 与 **为什么**。
-- 避免描述如何实现（不写技术栈、API、代码结构）。
-- 面向业务相关方而非开发者撰写。
-- 不要在 spec 中内嵌任何检查清单。清单将由后面生成。
+#### tasks.md 文件生成或修改
+1. **执行任务生成工作流**：
+   - 加载 `spec.md` 并提取用户故事及其优先级（P1、P2、P3 等）；
+   - 加载 `docus/structure.md` 和 `docus/constitution.md`，必要时再读取 `docus/layers/`、`docus/workflows/` 与 `src/` 中的相关文件，以获取实现上下文；
+   - 识别哪些用户故事需要测试、哪些可作为基础设施/前置任务、哪些可并行；
+   - 按用户故事组织任务，并为每个阶段生成清晰的依赖顺序；
+   - 校验任务完整性（每个用户故事必须具备足够任务，并且验收标准可独立测试）。
 
-
-## 3. tasks.md 文件生成或修改
-
-### 大纲
-
-3. **执行任务生成工作流**：
-   - 加载 spec.md 并提取用户故事及其优先级（P1、P2、P3 等）
-   - 加载 `docus/structure.md` 和 `docus/constitution.md` 以了解当前项目架构与原则
-   - 依据需要加载相应docus文件或源代码src以获取实现上下文
-   - 按用户故事组织生成任务（见下方任务生成规则）
-   - 生成依赖图，展示用户故事完成顺序
-   - 校验任务完整性（每个用户故事具备所需任务，且可独立测试）
-
-4. **生成 tasks.md**：使用 `.docusdd/templates/tasks-template.md` 作为结构，并填充：
+2. **生成 tasks.md**：使用 [.docusdd/templates/spec-tasks-template.md](/.docusdd/templates/spec-tasks-template.md) 作为结构，并填充：
    - 从 spec.md 获取正确的功能名称
    - 状态（已完成，正在实现，正在规划）
    - 类型（重构或建构，bug修复或代码测试，功能开发或修改）
@@ -110,53 +109,59 @@ $ARGUMENTS
    - 每个故事提供并行执行示例
    - 实现策略部分（MVP 优先、增量交付）
 
-任务生成上下文：$ARGUMENTS 
+#### checklist.md 文件生成或修改
 
-tasks.md 应当可立即执行——每个任务必须足够具体，使得 LLM 无需额外上下文即可完成。
+参考 [.docusdd/templates/spec-checklist-template.md](/.docusdd/templates/spec-checklist-template.md) 的结构，生成或更新 `checklist.md`
+checklist.md用于检验实现产物是否满足 spec.md 中的验收标准。它不是可有可无的附属文件，而是实现验收的一部分。你需要：
+1. 把 `spec.md` 中的关键验收标准改写成可逐项检查的条目。
+2. 在实现过程中会逐项打勾或标记失败原因。
 
-### 任务生成规则
+## 3. 实现小型任务
 
-**关键要求**：任务必须按用户故事组织，以支持独立实现与测试。
+如果生成的任务列表中包含 5 个或更少的任务，并且这些任务都属于同一个用户故事（即它们共享同一个 [US?] 标签），则可以直接执行这些任务，而无需调用 `DDD-implementor` 进入实现阶段。
+执行完之后更新 `tasks.md` 中的任务状态。
 
-**测试为可选项**：仅当功能规格中明确要求，或用户要求采用 TDD 方法时，才生成测试任务。
+## 4. 原则与参考
 
-### 清单格式（必需）
+### 任务生成的具体判断顺序
 
-每个任务都必须严格遵循以下格式：
+AI 应当按下面顺序做决定，而不是直接开始写任务：
+1. 先判断这是不是已有需求的增量修改；
+2. 再判断 spec 中有几个用户故事、哪些故事是核心、哪些是支撑；
+3. 再判断哪些任务必须先于实现完成（例如文档、数据模型、接口契约、测试）；
+4. 再判断哪些任务可以并行（不同文件、不同故事、无依赖）；
+5. 最后生成 `tasks.md`。
 
-```text
-- [ ] [TaskID] [P?] [Story?] 带文件路径的描述
-```
+### 文件与模板来源
 
-**格式组件**：
+创建或更新规范文件时，必须明确参照仓库内模板：
+- `spec.md` 的结构来源： [.docusdd/templates/spec-specs-template.md](../../.docusdd/templates/spec-specs-template.md)
+- `tasks.md` 的结构来源： [.docusdd/templates/spec-tasks-template.md](../../.docusdd/templates/spec-tasks-template.md)
+- `checklist.md` 的结构来源： [.docusdd/templates/spec-checklist-template.md](../../.docusdd/templates/spec-checklist-template.md)
 
-1. **复选框**：始终以 `- [ ]` 开始（Markdown checkbox）
-2. **任务 ID**：按执行顺序递增编号（T001、T002、T003...）
-3. **[P] 标记**：仅当任务可并行时才包含（涉及不同文件，且不依赖未完成任务）
-4. **[Story] 标签**：仅用于用户故事 phase 的任务，且为必需
-   - 格式：[US1]、[US2]、[US3] 等（映射到 spec.md 的用户故事）
-   - Setup phase：不加 story 标签
-   - Foundational phase：不加 story 标签
-   - User Story phases：必须有 story 标签
-   - Polish phase：不加 story 标签
-5. **描述**：清晰动作 + 精确文件路径
+AI 需要能清楚区分：
+- 读取 `statistics.md` → 识别“新建”还是“修改已有需求”；
+- 新建时 → 先分配序号、再建立目录、再写入三个文件；
+- 修改时 → 直接定位到目标目录并更新现有内容。
 
-**示例**：
+如果需要更快确认上下文，优先使用以下脚本：
+- [.docusdd/scripts/get_env_name.ps1](../../.docusdd/scripts/get_env_name.ps1)
+- [.docusdd/scripts/check_specs_structure.ps1](../../.docusdd/scripts/check_specs_structure.ps1)
+- [.docusdd/scripts/check_docus_structure.ps1](../../.docusdd/scripts/check_docus_structure.ps1)
 
-- ✅ 正确：`- [ ] T001 Create project structure per implementation plan`
-- ✅ 正确：`- [ ] T005 [P] Implement authentication middleware in src/middleware/auth.py`
-- ✅ 正确：`- [ ] T012 [P] [US1] Create User model in src/models/user.py`
-- ✅ 正确：`- [ ] T014 [US1] Implement UserService in src/services/user_service.py`
-- ❌ 错误：`- [ ] Create User model`（缺少 ID 与 Story 标签）
-- ❌ 错误：`T001 [US1] Create model`（缺少复选框）
-- ❌ 错误：`- [ ] [US1] Create User model`（缺少任务 ID）
-- ❌ 错误：`- [ ] T001 [US1] Create model`（缺少文件路径）
+### 快速指南
 
+- 聚焦于用户需要 **什么** 与 **为什么**。
+- 避免描述如何实现（不写技术栈、API、代码结构）。
+- 面向业务相关方而非开发者撰写。
+- 不要在 spec 中内嵌任何检查清单。清单将由后面生成。
 
-## 4. 实现小型任务
+### 参考链接
 
-如果生成的任务列表中包含 5 个或更少的任务，并且这些任务都属于同一个用户故事（即它们共享同一个 [US?] 标签），则可以直接执行这些任务，而无需调用DDD-implementor进入实现阶段。
-执行完之后更新 task.md中的任务状态.
-
+与 spec-kit 对应的参考命令：
+- [spec-kit/templates/commands/specify.md](https://github.com/github/spec-kit/blob/main/templates/commands/specify.md)
+- [spec-kit/templates/commands/tasks.md](https://github.com/github/spec-kit/blob/main/templates/commands/tasks.md)
+- [spec-kit/templates/commands/plan.md](https://github.com/github/spec-kit/blob/main/templates/commands/plan.md)
+- [spec-kit/templates/commands/analyze.md](https://github.com/github/spec-kit/blob/main/templates/commands/analyze.md)
 
 
