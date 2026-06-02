@@ -26,9 +26,10 @@ $ARGUMENTS
 
 在读取统计索引前后，可以先用 [.docusdd/scripts/check_specs_structure.ps1](../../.docusdd/scripts/check_specs_structure.ps1) 快速查看当前 `specs/` 结构；如果需要对照长期文档再做判断，也可以用 [.docusdd/scripts/check_docus_structure.ps1](../../.docusdd/scripts/check_docus_structure.ps1) 查看 `docus/` 结构。
 
-1. 如果用户已经明确指出是某个已有需求，并且给出了需求名称或文件夹路径，则直接进入“修改已有 spec”模式，不创建新目录。
+1. 如果用户已经明确指出是某个已有需求，并且给出了需求名称或文件夹路径，则直接进入“修改已有 文件”模式，不创建新目录。
 2. 如果用户没有明确指定，但看起来像一个对现有需求的小修订，先在 `statistics.md` 中按关键字、语义相似度、历史标题进行匹配，找到最可能的目标需求，然后修改该需求目录下的文件。
-3. 只有在以下情况同时成立时，才进入“新需求”模式：
+注意如果最终判断属于对已有需求的修改，你需要在修改完之后在每个文件中(spec.md,tasks.md,checklist.md)中填写版本变更记录。
+4. 只有在以下情况同时成立时，才进入“新需求”模式：
    - `statistics.md` 中找不到足够相近的已有需求；
    - 用户描述明显是一个新的独立功能/问题；
    - 将其并入旧需求会导致范围污染或验收边界变模糊。
@@ -171,8 +172,5 @@ AI 需要能清楚区分：
 - [spec-kit/templates/commands/tasks.md](https://github.com/github/spec-kit/blob/main/templates/commands/tasks.md)
 - [spec-kit/templates/commands/plan.md](https://github.com/github/spec-kit/blob/main/templates/commands/plan.md)
 - [spec-kit/templates/commands/analyze.md](https://github.com/github/spec-kit/blob/main/templates/commands/analyze.md)
-
-
-
 
 
