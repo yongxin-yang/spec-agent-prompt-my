@@ -14,6 +14,12 @@ $ARGUMENTS
 
 你 **必须** 在继续之前先考虑用户输入（如果不为空）。
 
+# 大纲
+
+触发消息中，用户在 `/DDD-require-explainer` 后输入的文本 **就是** 功能描述。即使下面字面出现 `$ARGUMENTS`，也假设你始终能在本次对话中拿到该描述。除非用户给了空命令，否则不要让用户重复输入。
+
+基于该功能描述，执行以下步骤：
+
 ## 1. 判断是否属于之前的需求
 
 先读取 `./specs/statistics.md`，把它当作需求索引表来使用。你的任务不是“总是新建”，而是先判断用户输入对应的是新需求还是已有需求的增量修改。
@@ -29,15 +35,7 @@ $ARGUMENTS
 
 当判定为新需求时，先为其分配新的序号，再创建新的需求目录。
 
-## 2. specs.md,tasks.md,checklist.md 文件生成或修改
-
-### 大纲
-
-触发消息中，用户在 `/DDD-require-explainer` 后输入的文本 **就是** 功能描述。即使下面字面出现 `$ARGUMENTS`，也假设你始终能在本次对话中拿到该描述。除非用户给了空命令，否则不要让用户重复输入。
-
-基于该功能描述，执行以下步骤：
-
-#### specs.md 文件生成或修改
+## 2. specs.md 文件生成或修改
 
 1. **生成一个简短名称**（2-4 个词）：
    - 分析功能描述并提取最关键的关键词
@@ -87,7 +85,7 @@ $ARGUMENTS
 
    如果本次判定为“已有需求修改”，则只更新该需求目录内的相应文件，不创建新文件夹。
 
-#### tasks.md 文件生成或修改
+## 3.  tasks.md 文件生成或修改
 1. **执行任务生成工作流**：
    - 加载 `spec.md` 并提取用户故事及其优先级（P1、P2、P3 等）；
    - 加载 `docus/structure.md` 和 `docus/constitution.md`，必要时再读取 `docus/layers/`、`docus/workflows/` 与 `src/` 中的相关文件，以获取实现上下文；
@@ -109,21 +107,31 @@ $ARGUMENTS
    - 每个故事提供并行执行示例
    - 实现策略部分（MVP 优先、增量交付）
 
-#### checklist.md 文件生成或修改
+## 4.  checklist.md 文件生成或修改
 
 参考 [.docusdd/templates/spec-checklist-template.md](/.docusdd/templates/spec-checklist-template.md) 的结构，生成或更新 `checklist.md`
 checklist.md用于检验实现产物是否满足 spec.md 中的验收标准。它不是可有可无的附属文件，而是实现验收的一部分。你需要：
 1. 把 `spec.md` 中的关键验收标准改写成可逐项检查的条目。
 2. 在实现过程中会逐项打勾或标记失败原因。
 
-## 3. 实现小型任务
+## 5.  实现小型任务
 
 如果生成的任务列表中包含 5 个或更少的任务，并且这些任务都属于同一个用户故事（即它们共享同一个 [US?] 标签），则可以直接执行这些任务，而无需调用 `DDD-implementor` 进入实现阶段。
 执行完之后更新 `tasks.md` 中的任务状态。
 
-## 4. 原则与参考
+## 6. 向用户输出最终摘要：
+   - 需求定位：判定为“新需求”或“修改已有需求”，并给出对应目录 `specs/###-short-name/`（或实际目标目录）。
+   - 关键产物：本次新增/更新的文件路径（至少包含 `spec.md`、`tasks.md`、`checklist.md`，以及 `specs/statistics.md` 的变更）。
+   - 用户故事概览：从 `spec.md` 汇总 [US?] 列表与优先级（P1/P2/P3），并说明是否满足进入实现阶段（SUCCESS / ERROR）。
+   - 需要澄清与默认假设：列出所有 `[NEEDS CLARIFICATION: ...]`（最多 3 条）与 Assumptions 的关键点。
+   - 下一步执行建议：若任务数 ≤ 5 且同一 [US?]，说明已直接执行并更新 `tasks.md`；否则给出移交 `DDD-implementor` 的明确入口与目标目录。
+   - 建议提交信息：新建需求用 `specs: add ###-short-name (spec + tasks + checklist)`；增量修改用 `specs: update ###-short-name (scope: <...>)`。
 
-### 任务生成的具体判断顺序
+
+
+# 原则与参考
+
+## 任务生成的具体判断顺序
 
 AI 应当按下面顺序做决定，而不是直接开始写任务：
 1. 先判断这是不是已有需求的增量修改；
@@ -132,7 +140,7 @@ AI 应当按下面顺序做决定，而不是直接开始写任务：
 4. 再判断哪些任务可以并行（不同文件、不同故事、无依赖）；
 5. 最后生成 `tasks.md`。
 
-### 文件与模板来源
+## 文件与模板来源
 
 创建或更新规范文件时，必须明确参照仓库内模板：
 - `spec.md` 的结构来源： [.docusdd/templates/spec-specs-template.md](../../.docusdd/templates/spec-specs-template.md)
@@ -149,19 +157,22 @@ AI 需要能清楚区分：
 - [.docusdd/scripts/check_specs_structure.ps1](../../.docusdd/scripts/check_specs_structure.ps1)
 - [.docusdd/scripts/check_docus_structure.ps1](../../.docusdd/scripts/check_docus_structure.ps1)
 
-### 快速指南
+## 快速指南
 
 - 聚焦于用户需要 **什么** 与 **为什么**。
 - 避免描述如何实现（不写技术栈、API、代码结构）。
 - 面向业务相关方而非开发者撰写。
 - 不要在 spec 中内嵌任何检查清单。清单将由后面生成。
 
-### 参考链接
+## 参考链接
 
 与 spec-kit 对应的参考命令：
 - [spec-kit/templates/commands/specify.md](https://github.com/github/spec-kit/blob/main/templates/commands/specify.md)
 - [spec-kit/templates/commands/tasks.md](https://github.com/github/spec-kit/blob/main/templates/commands/tasks.md)
 - [spec-kit/templates/commands/plan.md](https://github.com/github/spec-kit/blob/main/templates/commands/plan.md)
 - [spec-kit/templates/commands/analyze.md](https://github.com/github/spec-kit/blob/main/templates/commands/analyze.md)
+
+
+
 
 
