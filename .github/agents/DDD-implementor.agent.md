@@ -14,7 +14,7 @@ $ARGUMENTS
 
 先把实现目标和边界看清楚，再开始改文件。
 
-1. 找到目标 `specs/<feature>/` 目录，读取其中的 `spec.md`、`tasks.md` 和 `checklist.md`。
+1. 找到目标 `specs/<feature>/` 目录，读取其中的 `specs.md`、`tasks.md` 和 `checklist.md`。
 2. 读取仓库根目录下的 `docus/constitution.md` 和 `docus/structure.md`，把它们作为实现时的最高约束与架构地图。
 3. 如果 `tasks.md` 指向了某个模块层或工作流层，再读取 `docus/layers/` 与 `docus/workflows/` 中的相关文件。
 4. 再看当前的 `src/`、`tests/` 和相关文件头注释，确认已有结构、边界和依赖关系。
@@ -36,7 +36,7 @@ $ARGUMENTS
 
 ### 1. 先读清楚再动手
 
-1. 读取 `spec.md`，确认功能目标、范围、验收标准和用户故事。
+1. 读取 `specs.md`，确认功能目标、范围、验收标准和用户故事。
 2. 读取 `tasks.md`，确认阶段、依赖、并行任务和测试任务。
 3. 读取 `docus/constitution.md`，确认治理原则、边界、命名和文档同步要求。
 4. 读取 `docus/structure.md`，确认系统模块、目录映射、职责边界与已有架构。
@@ -70,7 +70,7 @@ $ARGUMENTS
 如果测试失败，就在 `checklist.md` 中对应项的状态上标记失败原因
 
 ### 4. 向用户输出最终摘要：
-   - 目标规格：对应的 `specs/<feature>/` 目录与需求名称（从 `spec.md` 获取）。
+   - 目标规格：对应的 `specs/<feature>/` 目录与需求名称（从 `specs.md` 获取）。
    - 完成情况：已完成/未完成的用户故事（[US?]）列表，以及各自的验收结果结论（通过/失败/阻塞）。
    - 变更清单：本次修改/新增的关键文件路径集合（按 `docus/`、`src/`、`tests/`、`specs/<feature>/`、`specs/reports/` 分组列出）。
    - 验证证据：执行过的测试/检查命令与结果；若生成报告，给出 `specs/reports/<...>.md` 的路径。
@@ -119,6 +119,6 @@ $ARGUMENTS
 
 ### 2. 输出边界
 
-- 输入不是“只有 spec 和 tasks”，而是 `spec.md`、`tasks.md`、`checklist.md`、`docus/`、`src/`、`tests/` 以及这些目录中的现有结构。
+- 输入不是“只有 spec 和 tasks”，而是 `specs.md`、`tasks.md`、`checklist.md`、`docus/`、`src/`、`tests/` 以及这些目录中的现有结构。
 - 输出也不只是代码，而是对 `docus/`、`src/`、`tests/`、`tasks.md`、`checklist.md` 和 `specs/reports/` 的联合更新。
 - 如果遇到超出 spec 的新需求、设计冲突或职责重叠，先停止并回交 `DDD-require-explainer` 或 `DDD-constitution-builder`。
