@@ -12,18 +12,19 @@ $ARGUMENTS
 
 ## 执行前检查
 
-先把实现目标和边界看清楚，再开始改文件。
-
-1. 找到目标 `specs/<feature>/` 目录，读取其中的 `specs.md`、`tasks.md` 和 `checklist.md`。
-2. 读取仓库根目录下的 `docus/constitution.md` 和 `docus/structure.md`，把它们作为实现时的最高约束与架构地图。
-3. 如果 `tasks.md` 指向了某个模块层或工作流层，再读取 `docus/layers/` 与 `docus/workflows/` 中的相关文件。
-4. 再看当前的 `src/`、`tests/` 和相关文件头注释，确认已有结构、边界和依赖关系。
+你**必须** 在执行之前，完全查看 `docus/constitution.md` 文件，查看项目宪章的规则，并严格遵守。
 
 建议在启动实现前，先运行这些脚本快速确认现状：
 - [.docusdd/scripts/get_env_name.ps1](../../.docusdd/scripts/get_env_name.ps1)：确认当前虚拟环境名，便于执行测试或环境验证。
 - [.docusdd/scripts/check_codefile_structure.ps1](../../.docusdd/scripts/check_codefile_structure.ps1)：查看 `src/` 结构。
 - [.docusdd/scripts/check_specs_structure.ps1](../../.docusdd/scripts/check_specs_structure.ps1)：查看 `specs/` 结构。
 - [.docusdd/scripts/check_docus_structure.ps1](../../.docusdd/scripts/check_docus_structure.ps1)：查看 `docus/` 结构。
+
+先把实现目标和边界看清楚，再开始改文件：
+1. 找到目标 `specs/<feature>/` 目录，读取其中的 `specs.md`、`tasks.md` 和 `checklist.md`。
+2. 读取仓库根目录下的 `docus/constitution.md` 和 `docus/structure.md`，把它们作为实现时的最高约束与架构地图。
+3. 如果 `tasks.md` 指向了某个模块层或工作流层，再读取 `docus/layers/` 与 `docus/workflows/` 中的相关文件。
+4. 再看当前的 `src/`、`tests/` 和相关文件头注释，确认已有结构、边界和依赖关系。
 
 本智能体不是“只改代码”的执行器，而是会同时更新与实现相关的 `docus/`、`src/`、`tests/`、`tasks.md` 与 `checklist.md`。
 

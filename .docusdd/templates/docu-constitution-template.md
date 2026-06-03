@@ -8,7 +8,7 @@
 [PRINCIPLE_1_DESCRIPTION]
 <!-- 示例：
 - MUST：所有功能变更必须先更新 docus/ 或 specs/ 中的对应文档，再进行代码修改。
-- MUST：实现、测试、验收必须可追溯到文档条目（spec.md / tasks.md / checklist.md）。
+- MUST：实现、测试、验收必须可追溯到文档条目（specs.md / tasks.md / checklist.md）。
 - MUST NOT：未经文档确认直接修改核心行为或接口契约。
 - Rationale：保证系统行为由文档定义，避免 AI 生成与设计漂移。
 -->
@@ -17,8 +17,8 @@
 <!-- 示例：让规范可执行 (Executable Specs) -->
 [PRINCIPLE_2_DESCRIPTION]
 <!-- 示例：
-- MUST：每个需求目录至少包含 spec.md、tasks.md、checklist.md。
-- MUST：spec.md 中每条关键需求必须可测试，且有 Success Criteria。
+- MUST：每个需求目录至少包含 specs.md、tasks.md、checklist.md。
+- MUST：specs.md 中每条关键需求必须可测试，且有 Success Criteria。
 - SHOULD：任务按用户故事分组，保证可独立交付与验证。
 - MUST：测试、评估、检查、验收输出统一落地到 specs/reports/。
 - Rationale：确保“规范 -> 实现 -> 验证”闭环可执行、可审计。
@@ -62,7 +62,7 @@
 <!-- 示例：
 - MUST：在 Windows + PowerShell 环境下执行项目默认流程（若项目另有说明，以项目为准）。
 - MUST：Python 项目使用 my-uv 与 uv 统一管理环境与依赖。
-- MUST：测试框架优先 pytest，目录建议 test/unit、test/integration、test/data。
+- MUST：测试框架优先 pytest，目标目录建议 tests/unit、tests/integration、tests/data；若仓库仍保留 `test/`，必须明确其兼容性质。
 - MUST：报告包含通过率、失败详情、关键堆栈、可选覆盖率摘要，并归档到 specs/reports/。
 - Rationale：保证环境可复现、测试结果可验证。
 -->
@@ -91,7 +91,7 @@
   2) 更新 docus/constitution.md
   3) 同步 .docusdd/templates/*
   4) 同步 .github/agents/*.agent.md 中的约束引用
-  5) 同步 README.md 与 quickstart.md 的运行时说明
+  5) 同步 `README` 或 `README.md` 与 `quickstart.md` 的运行时说明
   6) 输出同步影响报告（版本变更、影响文件、待办项）
 - MUST：同步时主动检查是否存在过时路径、过时代理名、冲突规则。
 - MUST：如果关键信息缺失，写 TODO(FIELD_NAME): explanation 并在报告中列出。
@@ -116,7 +116,7 @@
   - .docusdd/templates/spec-checklist-template.md
   - .docusdd/templates/spec-report-template.md
   - .github/agents/*.agent.md
-  - README.md
+  - `README` 或 `README.md`
   - quickstart.md
 - 合规审计：关键 PR 必须给出受影响原则清单与 specs/reports/ 证据链接。
 -->

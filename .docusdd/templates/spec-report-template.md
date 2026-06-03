@@ -44,7 +44,7 @@
 
 ## 5. 归档信息 (Archive)
 - **输出路径**: `specs/reports/[report-name].md`
-- **关联规范**: `specs/[###-feature-name]/spec.md`
+- **关联规范**: `specs/[###-feature-name]/specs.md`
 - **关联任务**: `specs/[###-feature-name]/tasks.md`
 - **关联清单**: `specs/[###-feature-name]/checklist.md`
 ```

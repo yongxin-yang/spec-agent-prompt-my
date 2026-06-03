@@ -4,7 +4,7 @@
 # 实施计划：[FEATURE]
 
 **分支**：`[###-feature-name]` | **日期**：[DATE] | **规范**：[link]  
-**输入**：来自 `/specs/[###-feature-name]/spec.md` 的特性规范
+**输入**：来自 `/specs/[###-feature-name]/specs.md` 的特性规范
 
 说明：此模板由 `/DDD-` 填充。执行流程见 `.specify/templates/commands/plan.md`。
 
@@ -56,19 +56,20 @@
   示例：
   - 操作系统：Windows。
   - 终端环境：PowerShell。
-  - Python 环境管理：使用 my-uv 统一管理虚拟环境，不直接使用标准 venv 命令。
-  - 环境名：优先读取 `$env:PROJECT_ENV_NAME`；若未设置，则运行 `.docusdd/scripts/get_env_name.ps1` 获取/写入。
+  - Python 环境管理：使用 `my-uv` 统一管理虚拟环境，不直接使用标准 `venv` 命令。
+  - 环境名：优先读取 `$env:PROJECT_ENV_NAME`；若未设置，则点源 `.docusdd/scripts/get_env_name.ps1` 获取/写入。
   - 激活顺序：执行 Python 任务前必须先 `my-uv activate $env:PROJECT_ENV_NAME`。
-  - 依赖同步：使用 `uv sync` 同步依赖；使用 `uv add`/`uv remove`/`uv lock`/`uv export` 管理锁定与导出。
-  - 运行方式：优先在已激活环境中直接执行 `python`；必要时使用 `uv run python <script>`。
-  - 环境检查：在编写或运行代码前确认环境已激活且依赖完整。
+  - 依赖声明源：`pyproject.toml` 是单一事实来源。
+  - 依赖同步：使用 `uv sync` 同步依赖；使用 `uv add` / `uv remove` / `uv lock` / `uv export` 管理锁定与导出。
+  - 运行方式：优先在已激活环境中直接执行 `python run.py ...`；必要时使用 `uv run python <script>`。
+  - 环境检查：在编写、运行或测试代码前确认环境已激活且依赖完整。
 -->
 - **操作系统**: Windows
 - **终端环境**: PowerShell
 - **包与环境管理**:
         - **Python**: 使用自制uv扩展 `my-uv` 进行环境管理.
             - **注意**: 本项目依赖 `my-uv` 提供的统一命令来管理虚拟环境, 请勿直接使用标准 `venv` 命令.
-            - **项目环境名称**: 优先使用终端环境变量 `$env:PROJECT_ENV_NAME`；若未设置则点源 `/.docusdd/scripts/get_env_name.ps1` 写入后使用。
+            - **项目环境名称**: 优先使用终端环境变量 `$env:PROJECT_ENV_NAME`；若未设置则点源 `.docusdd/scripts/get_env_name.ps1` 写入后使用。
             - **激活环境**: 执行 python 任务前**必须**先激活此环境：`my-uv activate $env:PROJECT_ENV_NAME`.
         - **扩展命令参考**:
             - `my-uv activate <name>` (别名 `a`): 激活指定名称的虚拟环境.
@@ -85,7 +86,7 @@
             - `uv export -o requirements.txt`: 导出当前锁定依赖为 `requirements.txt` 以供外部复现。
             - `uv run python <script>`: 在项目依赖上下文中运行脚本 (可选; 常规用法为激活环境后直接执行 `python`)。
         - **使用顺序建议**:
-            - 若 `$env:PROJECT_ENV_NAME` 未设置，先点源 `/docusdd/scripts/get_env_name.ps1`，再执行 `my-uv activate $env:PROJECT_ENV_NAME`，最后执行 `uv ...` 命令。
+            - 若 `$env:PROJECT_ENV_NAME` 未设置，先点源 `.docusdd/scripts/get_env_name.ps1`，再执行 `my-uv activate $env:PROJECT_ENV_NAME`，最后执行 `uv ...` 命令。
             - 运行时依赖与开发依赖分离: 使用 `uv add --dev <package>` 添加仅开发场景需要的依赖。
             - 项目以 `pyproject.toml` 为单一依赖声明源; 锁文件控制具体解析版本, 保证可复现安装。
         - **详细文档**: `UVExtenIntro`文件夹下内容.
@@ -102,9 +103,9 @@ specs/scripts/ 脚本工具等
 specs/statistics.md 索引所有需求，标号并写简要概述
 specs/reports/ 实现、测试、评估、检查、验收与环境验证报告
 specs/[###-feature]/
-├── specs.md             # require-explainer 输出 该需求的简洁的自然语言描述
-├── checklist.md          # tester 输出 
-└── tasks.md             # require-explainer 输出 具体实现规划以及实现状态和测试规划
+├── specs.md             # require-explainer 输出，该需求的简洁自然语言描述
+├── checklist.md         # tester 输出，保存该需求的验收清单
+└── tasks.md             # require-explainer 输出，具体实现规划、实现状态和测试规划
 ```
 ### 依据来源文档
 <!--

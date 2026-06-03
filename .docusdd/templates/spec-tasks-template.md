@@ -10,7 +10,7 @@ description: "特性实现任务模板"
 - **变更内容**：[填写相对基线版本的新增、修改、删除内容]
 
 **输入**：来自 `/specs/[###-feature-name]/` 的设计文档  
-**前置**：plan.md（必需）、spec.md（用户故事必需）、research.md、data-model.md、contracts/
+**前置**：plan.md（必需）、specs.md（用户故事必需）、research.md、data-model.md、contracts/
 
 **测试**：下例包含测试任务。测试为可选——仅当特性规范明确要求时包含。
 
@@ -26,7 +26,7 @@ description: "特性实现任务模板"
   ============================================================================
   重要：以下任务仅为示例。
   /speckit.tasks 必须用真实任务替换它们，基于：
-  - spec.md 中的用户故事与优先级
+  - specs.md 中的用户故事与优先级
   - plan.md 中的特性需求
   - data-model.md 的实体
   - contracts/ 的端点
@@ -43,7 +43,7 @@ description: "特性实现任务模板"
 **目的**：把宪章规则转为可执行任务，作为所有实现前置条件。
 
 - [ ] T000 更新 `docus/` 或 `specs/` 对应文档后再开始实现（文档即代码）
-- [ ] T000A 校验 `spec.md` 需求均具备可测试验收标准
+- [ ] T000A 校验 `specs.md` 需求均具备可测试验收标准
 - [ ] T000B 校验运行环境约束（Windows/PowerShell；Python 项目需 my-uv + uv）
 - [ ] T000C 预创建或确认报告输出路径 `specs/reports/`
 
@@ -53,8 +53,8 @@ description: "特性实现任务模板"
 
 **目的**：把基线版本和变更内容拆分为可执行任务；若不是迭代需求，可整体删除本阶段。
 
-- [ ] T000D 确认基线版本与追溯路径（如 `specs/[old-feature]/spec.md`、旧报告、已发布文档）
-- [ ] T000E 梳理 `spec.md` 中的变更内容，并确认与旧版本差异一致
+- [ ] T000D 确认基线版本与追溯路径（如 `specs/[old-feature]/specs.md`、旧报告、已发布文档）
+- [ ] T000E 梳理 `specs.md` 中的变更内容，并确认与旧版本差异一致
 - [ ] T000F [P] 更新受影响的文档、任务和验收引用，确保版本描述一致
 
 ---
@@ -104,7 +104,7 @@ description: "特性实现任务模板"
 
 **目的**：影响多个用户故事的改进
 
-- [ ] TXXX [P] 更新文档 docs/
+- [ ] TXXX [P] 更新文档 docus/
 - [ ] TXXX 代码清理与重构
 - [ ] TXXX 全局性能优化
 - [ ] TXXX [P] 追加单元测试 tests/unit/（若有请求）
