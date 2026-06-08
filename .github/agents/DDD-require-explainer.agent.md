@@ -1,5 +1,5 @@
 ---
-description: 根据自然语言的功能描述创建或更新功能规格说明（spec）,并进行修改规划
+description: 根据自然语言的功能描述创建或更新功能规格说明（spec）,并进行修改规划。是使用率最高的智能体，一切任务包括小任务大任务都要经过这个智能体。所以要先读取必要的`constitution.md`和`structure.md`文件来了解项目的规则架构以及项目结构等。
 handoffs: 
   - label: implement large-scale modifications, including specific execution of document or code structure changes and code testing.
     agent: DDD-implementor
@@ -19,6 +19,10 @@ $ARGUMENTS
 触发消息中，用户在 `/DDD-require-explainer` 后输入的文本 **就是** 功能描述。即使下面字面出现 `$ARGUMENTS`，也假设你始终能在本次对话中拿到该描述。除非用户给了空命令，否则不要让用户重复输入。
 
 基于该功能描述，执行以下步骤：
+
+## 0. 读取项目规则章程和项目结构
+你**必须**在继续执行前检查`/docus/constitution`和`/docus/structure.md`文件是否存在并读取这两个文件。
+如果**文件不存在**，说明没有进行项目对于DDD的初始化，**拒绝执行任何操作**，无论用户输入是什么，并提醒用户先去执行前置步骤。
 
 ## 1. 判断是否属于之前的需求
 
