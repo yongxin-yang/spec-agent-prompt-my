@@ -24,8 +24,9 @@
   1) 文档即代码：本需求是否已在 docus/ 或 specs/ 中定义清楚？
   2) 可执行规范：每条关键需求是否可测试并可落到 checklist？
   3) 单一事实来源：是否引用了 statistics.md 和唯一规范路径？
-  4) 环境与测试：是否声明 Windows/PowerShell、`my-uv`/`uv`/`pytest`（若适用）？
-  5) 报告追溯：是否约定结果输出到 specs/reports/？
+  4) 双向追溯：是否列出相关 `docus/` 文件/章节，并要求这些文档回指本 spec？
+  5) 环境与测试：是否声明 Windows/PowerShell、`my-uv`/`uv`/`pytest`（若适用）？
+  6) 报告追溯：是否约定结果输出到 specs/reports/？
 
   示例：
   - 宪章条款引用：第 I 条（文档即代码）、第 II 条（可执行规范）、第 VI 条（环境与测试纪律）
@@ -33,6 +34,24 @@
     - 本 spec 的 FR-001~FR-005 均有可测验收标准。
     - 所有验证结果归档到 specs/reports/[###-feature]-acceptance.md。
 -->
+
+## 关联依据文档（必填）
+
+<!--
+  需操作：至少列出本需求依赖的 `docus/` 文件或章节。
+  额外要求：
+  1. 相关 `docus/` 文档必须能回指本 spec 目录，或明确标注为“全局适用”。
+  2. 若本需求会落到特定 `src/` 模块，建议同时列出目标实现文件，便于后续双向追溯。
+-->
+
+- **长期规则/架构依据**：
+  - `docus/constitution.md#...`
+  - `docus/structure.md#...`
+- **分层/流程依据**：
+  - `docus/layers/...`
+  - `docus/workflows/...`
+- **预期实现落点（可选但推荐）**：
+  - `src/...`
 
 ## 用户场景与测试（必填）
 
