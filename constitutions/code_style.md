@@ -1,4 +1,4 @@
-### 4. 代码风格与规范
+# 代码风格与规范总要求
 - **核心原则**: **极简主义**. 只保留核心业务逻辑, 拒绝冗余.
 - **错误处理**:
     - **默认策略**: **不写** `try-except` 块. 让程序在错误处直接崩溃以暴露问题.
@@ -18,9 +18,9 @@
     - 调试用的 `print` 信息必须精简, 直击要点.
 
 # 错误示范：
-1. 检查项，兼容项太多：
+## 检查项，兼容项太多：
 
-```
+```python
     data_buffer = getattr(process_center, "data_buffer", None)
     other_results:dict = getattr(data_buffer, "other_results", {}) if data_buffer is not None else {}
     if not isinstance(other_results, dict):
@@ -35,7 +35,7 @@
 
 应该改成：
 
-```
+```python
 try:
     data_buffer：dict = getattr(process_center, "data_buffer")
     other_results:dict = getattr(data_buffer, "other_results")
@@ -51,15 +51,15 @@ except Exception as e:
 
 AI的评价： 把兼容式 getattr/if 判断改成你要求的 try/except + 明确结构假设。
 
-# 功能实现过杂和错位
+## 功能实现过杂和错位
 比如说，一个需要实现主流程步骤重复执行的函数脚本，
 加入了results-subdir,cv-folds,max-components等本该由function_config.yaml配置的参数，
 导致代码及其冗杂。
 
 
-# 数据传递不设成统一格式，使得代码参数冗杂且数据结构并不清晰。
+## 数据传递不设成统一格式，使得代码参数冗杂且数据结构并不清晰。
 比如：
-```
+```python
 common_entry = {
             "run_hash": runtime["run_hash"],
             "step_hash": runtime["step_hash"],
@@ -129,3 +129,43 @@ common_entry = {
         }
 ```
 这种其实要好一些，因为起码用了复用，只不过没有指定格式，还是json传递。
+
+# 正确示例
+## 具有文件开头的自描述以及函数和对象类的注释，详细且不冗余(实际使用要用英文)
+```python
+## Function to help find the best number of components of the PLS based on 10 CV Huber Loss
+def pls_data_optimization(X, Y, plot_components=False):
+    """
+    This function finds the optimal number of PLS components (up to 40) that best models the data
+    based on huber loss and 10 CV
+    X - The training data X
+    Y - The training data Y
+    plot_components - Plot the model's optimization and optimized model
+    """
+    #Run PLS including a variable number of components, up to 40,  and calculate mean of 10 CV huber loss
+    cv_huber=[]
+    component = np.arange(1, 40)
+    for i in component:
+        pls = PLSRegression(n_components=i)
+        cv_score=cross_val_score(pls, X, Y, cv=KFold(10, shuffle = True),\
+                        n_jobs=-1, scoring=huber_score)
+        cv_huber.append(np.mean(cv_score))
+        comp = 100*(i+1)/40
+        # Trick to update status on the same line
+        stdout.write("\r%d%% completed" % comp)
+        stdout.flush()
+    stdout.write("\n")
+ 
+    # Calculate and print the position of minimum
+    cv_hubermin = np.argmin(cv_huber)
+    print("Suggested number of components based in Mean of 10 CV huber loss: ", cv_hubermin+1)
+    print('Minimum found in Mean of 10 CV huber loss: {}'.format(np.min(cv_huber)))
+    stdout.write("\n")
+ 
+    # Define PLS with suggested number of components and fit train data
+    pls = PLSRegression(n_components=cv_hubermin+1)
+    pls.fit(X, Y)
+    
+    # Get predictions for calibration(train) and validation(test) sets
+    Y_pred = pls.predict(X) 
+```
